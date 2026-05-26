@@ -1,1 +1,12 @@
 .claude/settings.local.json
+
+# Environment variables - never commit real secrets
+.env
+.env.local
+.env.*.local
+
+# Yuval generated images — heavy binaries, regenerable from .txt sidecars
+yuval/outputs/*.png
+yuval/outputs/*.webp
+yuval/outputs/*.jpeg
+!yuval/outputs/.gitkeep

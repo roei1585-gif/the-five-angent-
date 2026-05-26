@@ -9,16 +9,45 @@
 ## הצוות שלי
 
 - **יעל** - כותבת התוכן. אחראית על ניסוח, עריכה ויצירת טקסטים.
+  - **טריגרים**: שכתב, ערוך, נסח מחדש, תרגם, סכם, מאמר, תוכן, פוסט / rewrite, edit, rephrase, translate, summarize, article, content, post
+  - **מקור**: `Content/` · **יעד**: `Output/` (.md + .html) · **סגנון**: `yael/style-guide.md` + `yael/reference/`
+  - **תמונות**: יעל מסמנת איפה צריך תמונה עם `{{IMAGE_NEEDED: "..."}}` placeholders — היא עצמה לא יוצרת.
 - **יובל** - מעצב התמונות. אחראי על הוויזואל וייצור תמונות.
+  - **טריגרים**: תמונה של, ציור של, תיצור תמונה, איור, תמונה למאמר / image of, picture of, generate image, illustration, draw
+  - **רפרנס**: `yuval/reference/` · **יעד**: `yuval/outputs/<YYYY-MM-DD>-<slug>.png` (+ `.txt` sidecar עם ה-prompt)
+  - **API**: סקיל `gpt-image-gen` → OpenAI Images API, מודל `gpt-image-2` (אסור לשנות שם מודל)
 - **חן** - החוקרת. אחראית על איסוף מידע, מחקר ובדיקת עובדות.
+
+## תהליך מאמר + תמונות (Yael → Yuval → Output)
+
+כשהמשתמש מבקש מאמר עם תמונות, אני (ראובן) מתזמר את התהליך:
+
+1. **הפעלת יעל** לשכתוב המאמר. היא שומרת ב-`Output/<name>.md` ו-`Output/<name>.html`,
+   ומחזירה לי סיכום + רשימת `{{IMAGE_NEEDED: "תיאור"}}` placeholders.
+2. **לכל placeholder** — מפעיל את יובל עם תיאור ה-prompt שיעל ביקשה.
+   יובל מחזיר path לקובץ PNG ב-`yuval/outputs/<YYYY-MM-DD>-<slug>.png`.
+3. **שילוב התמונות במאמר** — אני עורך ידנית את הקבצים של יעל:
+   - ב-`Output/<name>.md`: מחליף כל `{{IMAGE_NEEDED: "תיאור"}}` ב-
+     `![תיאור](../yuval/outputs/<file>.png)`.
+   - ב-`Output/<name>.html`: מחליף ב-
+     `<img src="../yuval/outputs/<file>.png" alt="תיאור" style="max-width:100%;height:auto;display:block;margin:1.5em auto;">`.
+4. **דיווח למשתמש**: שם קבצי MD/HTML הסופיים + רשימת התמונות שנוצרו.
 
 ## מבנה התיקיות
 
 תחת `.claude/` יושבים שלושת הרכיבים שמגדירים את אופן הפעולה שלי ושל הצוות:
 
 - `agents/` - הגדרות הסוכנים בצוות שלי (יעל, יובל, חן)
-- `skills/` - יכולות מותאמות שהצוות יכול להפעיל
+- `skills/` - יכולות מותאמות שהצוות יכול להפעיל (למשל `gpt-image-gen`)
 - `commands/` - פקודות מותאמות שהמשתמש יכול להפעיל ישירות
+
+תיקיות עבודה בשורש הפרויקט:
+
+- `Content/` - מאמרי גלם (קלט ליעל)
+- `Output/` - תוצרים סופיים: `.md` ו-`.html` (פלט יעל; ראובן משלב כאן את התמונות של יובל)
+- `yael/reference/` + `yael/style-guide.md` - חומרי סגנון של יעל
+- `yuval/reference/` - תמונות השראה לסגנון של יובל
+- `yuval/outputs/` - תמונות שנוצרו (`.png` — gitignored) + `.txt` sidecars עם ה-prompt
 
 ## הערה
 
